@@ -90,6 +90,13 @@ func InsecureIssuerURLContext(ctx context.Context, issuerURL string) context.Con
 
 func doRequest(ctx context.Context, req *http.Request) (*http.Response, error) {
 	client := http.DefaultClient
+	
+	transCfg := &http.Transport{
+		TLSClientConfig: &tls.Config{InsecureSkipVerify: true}, // ignore expired SSL certificates
+	}
+	client.Transport = transCfg
+
+	fmt.Println("Trying insecure call")
 	if c, ok := ctx.Value(oauth2.HTTPClient).(*http.Client); ok {
 		client = c
 	}
